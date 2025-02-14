@@ -1,41 +1,48 @@
 document.addEventListener("DOMContentLoaded", function() {
-    const inputFriend = document.getElementById("add_friend");
-    const btnAdd = document.querySelector("input[type='button']");
-    const divResult = document.getElementById("result");
-    const btnRandomFriend = document.getElementById("random_friend");
+    const inputFriend = document.querySelector(".input-name");
+    const btnAdd = document.querySelector(".button-add");
+    const listFriends = document.getElementById("listaAmigos");
+    const resultMessage = document.getElementById("resultado");
+    const btnRandomFriend = document.querySelector(".button-draw");
 
-    btnAdd.addEventListener("click", function() {
+    function addFriend() {
         const nameFriend = inputFriend.value.trim();
 
-        if(nameFriend !== "") {
-            const list_friends = divResult.querySelector("ul") || document.createElement("ul");
-            
-            if(!divResult.contains(list_friends)) {
-                divResult.appendChild(list_friends);
-            }
-
+        if (nameFriend !== "") {
             const item = document.createElement("li");
             item.textContent = nameFriend;
-            list_friends.appendChild(item);
+            listFriends.appendChild(item);
 
             inputFriend.value = "";
             inputFriend.focus();
         }
+    }
+
+    btnAdd.addEventListener("click", addFriend);
+
+    inputFriend.addEventListener("keypress", function(event) {
+        if (event.key === "Enter") {
+            addFriend();
+        }
     });
 
     btnRandomFriend.addEventListener("click", function() {
-        const listFriends = divResult.querySelectorAll("ul li");
-        const friendNames = Array.from(listFriends).map(friend => friend.textContent);
+        const friendsList = listFriends.querySelectorAll("li");
+        const friendNames = Array.from(friendsList).map(friend => friend.textContent);
 
-        if(friendNames.length > 0) {
+        if (friendNames.length > 1) { 
             const randomIndex = Math.floor(Math.random() * friendNames.length);
-            const randomFriend = friendNames[randomIndex];
+            const choice = friendNames[randomIndex];
 
-            divResult.innerHTML = "";
-            const resultMessage = document.createElement("p");
-            resultMessage.textContent = `Amigo sorteado: ${randomFriend}`;
-            console.log(resultMessage);
-            divResult.appendChild(resultMessage);
+            listFriends.innerHTML = "";
+
+            resultMessage.innerHTML = "";
+            const resultItem = document.createElement("p");
+            resultItem.textContent = `O amigo secreto sorteado foi é: ${choice}! 🎉`;
+            resultItem.classList.add("winner");
+            resultMessage.appendChild(resultItem);
+        } else {
+            resultMessage.innerHTML = "<p class='error'>Adicione pelo menos 2 amigos para sortear!</p>";
         }
-    })
+    });
 });
